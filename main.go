@@ -1,13 +1,27 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"go-gin-productManagerPro/controllers"
+	"go-gin-productManagerPro/models"
+	"go-gin-productManagerPro/repositories"
+	"go-gin-productManagerPro/services"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
+	products := []models.Product{
+		{ID: 1, Name: "Product1", Price: 1000, Description: "Description1", SoldOut: false},
+		{ID: 2, Name: "Product2", Price: 2000, Description: "Description2", SoldOut: true},
+		{ID: 3, Name: "Product3", Price: 3000, Description: "Description3", SoldOut: false},
+	}
+
+	productRepository := repositories.NewProductMemoryRepository(products)
+	productService := services.NewProductService(productRepository)
+	productController := controllers.NewProductController(productService)
+
+
 	r := gin.Default()
-	r.GET("/sample", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	r.GET("/products", productController.FindAll) 
 	r.Run("localhost:8080")
 }

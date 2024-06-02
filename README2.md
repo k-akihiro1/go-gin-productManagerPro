@@ -12,3 +12,8 @@ go mod init go-gin-productManagerPro
   air  
   参考：https://zenn.dev/urakawa_jinsei/articles/a5a222f67a4fac
 - うまくいかない場合は README3 を参考
+
+# DTO(Data Transfer Object)
+- リックエストデータ型の構造体（DTO）の定義
+- バリデーションのためのタグを設定
+- リクエストデータをDTOにバインド

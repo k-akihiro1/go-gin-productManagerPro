@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"go-gin-productManagerPro/dto"
 	"go-gin-productManagerPro/services"
 	"net/http"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 type IProductController interface {
 	FindAll(ctx *gin.Context)
 	FindById(ctx *gin.Context)
+	Create(ctx *gin.Context)
 }
 
 type ProductController struct {
@@ -47,3 +49,30 @@ func (c *ProductController) FindById(ctx *gin.Context) {
 	}
 	ctx.JSON((http.StatusOK), gin.H{"date": product})
 }
+
+func (c *ProductController) Create(ctx *gin.Context) {
+	var input dto.CreateItemInput
+
+	// respond with a 400 BadRequest status and provide a descriptive error message.
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	newProduct, err := c.service.Create(input)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{"data": newProduct})
+}
+
+
+/* 知識の補足*/
+/*
+ctx.JSONメソッド： Ginフレームワークの一部
+返り値として認識される理由は、
+この行がHTTPレスポンスを生成しクライアントに送信するためです。
+指定されたHTTPステータスコードと共にJSON形式のデータをクライアントに返す
+*/

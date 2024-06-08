@@ -24,5 +24,6 @@ func main() {
 	r := gin.Default()
 	r.GET("/products", productController.FindAll) 
 	r.GET("/products/:id", productController.FindById)
+	r.POST("/products", productController.Create)
 	r.Run("localhost:8080")
 }

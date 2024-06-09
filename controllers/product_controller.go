@@ -14,6 +14,7 @@ type IProductController interface {
 	FindById(ctx *gin.Context)
 	Create(ctx *gin.Context)
 	Update(ctx *gin.Context)
+	Delete(ctx *gin.Context)
 }
 
 type ProductController struct {
@@ -77,6 +78,11 @@ func (c *ProductController) Update(ctx *gin.Context) {
 	}
 
 	var input dto.UpdateProductInput
+	/**
+	 * Ginフレームワークで提供されているメソッドで、
+	 * HTTPリクエストのボディからJSONデータを読み取り
+	 * 指定されたGoの構造体にバインドする機能
+	 **/
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -101,3 +107,21 @@ ctx.JSONメソッド： Ginフレームワークの一部
 この行がHTTPレスポンスを生成しクライアントに送信するためです。
 指定されたHTTPステータスコードと共にJSON形式のデータをクライアントに返す
 */
+
+func (c *ProductController) Delete(ctx *gin.Context) {
+	productId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
+		return
+	}
+	err = c.service.Delete(uint(productId))
+	if err != nil {
+		if err.Error() == "product not found" {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
+		return
+	}
+	ctx.Status(http.StatusOK)
+}

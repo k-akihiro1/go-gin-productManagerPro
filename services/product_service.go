@@ -11,6 +11,7 @@ type IProductService interface {
 	FindById(productId uint) (*models.Product, error)
 	Create(createProductInput dto.CreateProductInput) (*models.Product, error)
 	Update(productId uint, updateproductInput dto.UpdateProductInput) (*models.Product, error)
+	Delete(productId uint) error
 }
 
 type ProductService struct {
@@ -45,17 +46,21 @@ func (s *ProductService) Update(productId uint, updateProductInput dto.UpdatePro
 		return nil, err
 	}
 
-	if updateProductInput.Name != nil{
+	if updateProductInput.Name != nil {
 		targetProduct.Name = *updateProductInput.Name
 	}
-	if updateProductInput.Price != nil{
+	if updateProductInput.Price != nil {
 		targetProduct.Price = *updateProductInput.Price
 	}
-	if updateProductInput.Description != nil{
+	if updateProductInput.Description != nil {
 		targetProduct.Description = *updateProductInput.Description
 	}
-	if updateProductInput.SoldOut != nil{
+	if updateProductInput.SoldOut != nil {
 		targetProduct.SoldOut = *updateProductInput.SoldOut
 	}
 	return s.repository.Update(*targetProduct)
+}
+
+func (s *ProductService) Delete(ProductId uint) error {
+	return s.repository.Delete(ProductId)
 }

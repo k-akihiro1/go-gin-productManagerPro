@@ -20,11 +20,11 @@ func main() {
 	productService := services.NewProductService(productRepository)
 	productController := controllers.NewProductController(productService)
 
-
 	r := gin.Default()
-	r.GET("/products", productController.FindAll) 
+	r.GET("/products", productController.FindAll)
 	r.GET("/products/:id", productController.FindById)
 	r.POST("/products", productController.Create)
 	r.PUT("/products/:id", productController.Update)
+	r.DELETE("/products/:id", productController.Delete)
 	r.Run("localhost:8080")
 }

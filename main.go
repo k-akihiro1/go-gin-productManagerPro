@@ -25,5 +25,6 @@ func main() {
 	r.GET("/products", productController.FindAll) 
 	r.GET("/products/:id", productController.FindById)
 	r.POST("/products", productController.Create)
+	r.PUT("/products/:id", productController.Update)
 	r.Run("localhost:8080")
 }

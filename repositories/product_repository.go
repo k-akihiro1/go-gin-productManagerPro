@@ -9,6 +9,7 @@ type IProductRepository interface {
 	FindAll() (*[]models.Product, error)
 	FindById(productId uint) (*models.Product, error)
 	Create(newProduct models.Product) (*models.Product, error)
+	Update(updateProduct models.Product)(*models.Product, error)
 }
 
 type ProductMemoryRepository struct {
@@ -23,9 +24,9 @@ func (r *ProductMemoryRepository) FindAll() (*[]models.Product, error) {
 	return &r.products, nil
 }
 
-func (r *ProductMemoryRepository) FindById(itemId uint) (*models.Product, error) {
+func (r *ProductMemoryRepository) FindById(productId uint) (*models.Product, error) {
 	for _, v := range r.products {
-		if v.ID == itemId {
+		if v.ID == productId {
 			return &v, nil
 		}
 	}
@@ -46,3 +47,13 @@ newProductはmodels.Product型の変数であり、
 &演算子を使用することでその変数のアドレスを取得し、
 *models.Product型（models.Productのポインタ型）の値として返している
 */
+
+func (r *ProductMemoryRepository) Update(updateProduct models.Product)(*models.Product, error){
+	for i, v := range r.products {
+		if v.ID == updateProduct.ID{
+			r.products[i] = updateProduct
+			return &r.products[i], nil	
+		}
+	}
+	return nil, errors.New("unexpected error")
+}

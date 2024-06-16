@@ -175,3 +175,21 @@ user := "user"
 password := "password"
 dbname := "mydatabase"
 port := "5432"
+
+# フィールドに指定可能なタグ
+https://gorm.io/ja_JP/docs/models.html#%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB%E3%83%89%E3%81%AB%E6%8C%87%E5%AE%9A%E5%8F%AF%E8%83%BD%E3%81%AA%E3%82%BF%E3%82%B0
+
+ロールバック機能がない
+
+
+# Goの現在のバージョンを削除
+sudo rm -rf /usr/local/go
+
+# 新しいバージョンのGoをダウンロード
+wget https://golang.org/dl/go1.20.linux-amd64.tar.gz
+
+# アーカイブを解凍してインストール
+sudo tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
+
+# 環境変数の設定（必要に応じて）
+export PATH=$PATH:/usr/local/go/bin

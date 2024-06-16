@@ -1,7 +1,9 @@
 # go-gin-productManagerPro
+
 This repository is implemented to refresh my memory of Go/Gin.
 
 # Development Environment
+
 Language: Go  
 Framework: Gin  
 ORM: Gorm  
@@ -9,11 +11,13 @@ Database: MySQL
 Authentication: JWT (gin-jwt)
 
 # Adopted Architecture
+
 Layered Architecture  
 Controller
+
 - Handling request data
 - Setting response
-Service  
+  Service
 - Functionality (implementation of business logic)
 - Implemented functionalities:
   - Products: search all, search by ID, register, update, delete
@@ -154,3 +158,20 @@ func main() {
     router.Run(":8080")
 }
 ```
+
+# 環境変数
+https://github.com/joho/godotenv
+go get github.com/joho/godotenv
+
+# データベースの接続設定
+- sqlite   :テスト環境用DB
+- postgres :本番環境用DB
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/sqlite
+go get -u gorm.io/driver/postgres
+
+host := "localhost"
+user := "user"
+password := "password"
+dbname := "mydatabase"
+port := "5432"

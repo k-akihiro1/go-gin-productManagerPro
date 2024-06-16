@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-gin-productManagerPro/controllers"
+	"go-gin-productManagerPro/infra"
 	"go-gin-productManagerPro/models"
 	"go-gin-productManagerPro/repositories"
 	"go-gin-productManagerPro/services"
@@ -10,6 +11,8 @@ import (
 )
 
 func main() {
+	infra.Initialize()
+	// log.Println(os.Getenv("ENV"))
 	products := []models.Product{
 		{ID: 1, Name: "Product1", Price: 1000, Description: "Description1", SoldOut: false},
 		{ID: 2, Name: "Product2", Price: 2000, Description: "Description2", SoldOut: true},

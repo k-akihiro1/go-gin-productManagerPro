@@ -12,14 +12,16 @@ import (
 
 func main() {
 	infra.Initialize()
-	// log.Println(os.Getenv("ENV"))
-	products := []models.Product{
-		{ID: 1, Name: "Product1", Price: 1000, Description: "Description1", SoldOut: false},
-		{ID: 2, Name: "Product2", Price: 2000, Description: "Description2", SoldOut: true},
-		{ID: 3, Name: "Product3", Price: 3000, Description: "Description3", SoldOut: false},
-	}
+	db := infra.SetupDB()
 
-	productRepository := repositories.NewProductMemoryRepository(products)
+	// products := []models.Product{
+	// 	{ID: 1, Name: "Product1", Price: 1000, Description: "Description1", SoldOut: false},
+	// 	{ID: 2, Name: "Product2", Price: 2000, Description: "Description2", SoldOut: true},
+	// 	{ID: 3, Name: "Product3", Price: 3000, Description: "Description3", SoldOut: false},
+	// }
+
+	// productRepository := repositories.NewProductMemoryRepository(products)
+	productRepository := repositories.NewProductRepository(db)
 	productService := services.NewProductService(productRepository)
 	productController := controllers.NewProductController(productService)
 

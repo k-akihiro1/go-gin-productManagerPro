@@ -3,6 +3,8 @@ package repositories
 import (
 	"errors"
 	"go-gin-productManagerPro/models"
+
+	"gorm.io/gorm"
 )
 
 type IProductRepository interface {
@@ -77,3 +79,40 @@ func (r *ProductMemoryRepository) Delete(productId uint) error {
 スライス[:i] は、スライスの最初の要素から i-1 番目の要素まで
 スライス[i+1:] は、スライスの i+1 畖目の要素から最後の要素まで
 */
+
+type productRepository struct {
+	db *gorm.DB
+}
+
+// Create implements IProductRepository.
+func (r *productRepository) Create(newProduct models.Product) (*models.Product, error) {
+	result := r.db.Create(&newProduct)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &newProduct, nil
+}
+
+// Delete implements IProductRepository.
+func (p *productRepository) Delete(productId uint) error {
+	panic("unimplemented")
+}
+
+// FindAll implements IProductRepository.
+func (p *productRepository) FindAll() (*[]models.Product, error) {
+	panic("unimplemented")
+}
+
+// FindById implements IProductRepository.
+func (p *productRepository) FindById(productId uint) (*models.Product, error) {
+	panic("unimplemented")
+}
+
+// Update implements IProductRepository.
+func (p *productRepository) Update(updateProduct models.Product) (*models.Product, error) {
+	panic("unimplemented")
+}
+
+func NewProductRepository(db *gorm.DB) IProductRepository {
+	return &productRepository{db: db}
+}

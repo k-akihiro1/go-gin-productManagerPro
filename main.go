@@ -3,7 +3,6 @@ package main
 import (
 	"go-gin-productManagerPro/controllers"
 	"go-gin-productManagerPro/infra"
-	"go-gin-productManagerPro/models"
 	"go-gin-productManagerPro/repositories"
 	"go-gin-productManagerPro/services"
 

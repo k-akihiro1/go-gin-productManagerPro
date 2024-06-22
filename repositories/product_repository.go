@@ -80,6 +80,7 @@ func (r *ProductMemoryRepository) Delete(productId uint) error {
 スライス[i+1:] は、スライスの i+1 畖目の要素から最後の要素まで
 */
 
+// DB接続用
 type productRepository struct {
 	db *gorm.DB
 }
@@ -100,12 +101,25 @@ func (p *productRepository) Delete(productId uint) error {
 
 // FindAll implements IProductRepository.
 func (p *productRepository) FindAll() (*[]models.Product, error) {
-	panic("unimplemented")
+	var products []models.Product
+	result := p.db.Find(&products)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &products, nil
 }
 
 // FindById implements IProductRepository.
 func (p *productRepository) FindById(productId uint) (*models.Product, error) {
-	panic("unimplemented")
+	var product models.Product
+	result := p.db.First(&product, productId)
+	if result.Error != nil {
+		if result.Error.Error() == "record not found" {
+			return nil, errors.New("product not found")
+		}
+		return nil, result.Error
+	}
+	return &product, nil
 }
 
 // Update implements IProductRepository.

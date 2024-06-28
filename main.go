@@ -25,10 +25,12 @@ func main() {
 	productController := controllers.NewProductController(productService)
 
 	r := gin.Default()
-	r.GET("/products", productController.FindAll)
-	r.GET("/products/:id", productController.FindById)
-	r.POST("/products", productController.Create)
-	r.PUT("/products/:id", productController.Update)
-	r.DELETE("/products/:id", productController.Delete)
+	// ルーターのグルーピング
+	productRouter := r.Group("/products")
+	productRouter.GET("", productController.FindAll)
+	productRouter.GET("/:id", productController.FindById)
+	productRouter.POST("", productController.Create)
+	productRouter.PUT("/:id", productController.Update)
+	productRouter.DELETE("/:id", productController.Delete)
 	r.Run("localhost:8080")
 }

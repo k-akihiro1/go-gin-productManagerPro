@@ -96,7 +96,17 @@ func (r *productRepository) Create(newProduct models.Product) (*models.Product, 
 
 // Delete implements IProductRepository.
 func (p *productRepository) Delete(productId uint) error {
-	panic("unimplemented")
+	deleteItem, err := p.FindById(productId);
+	if err != nil {
+		return err
+	}
+
+	// result := p.db.Unscoped().Delete(&deleteItem) // 物理削除
+	result := p.db.Delete(&deleteItem) // 論理削除
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }
 
 // FindAll implements IProductRepository.

@@ -193,3 +193,30 @@ sudo tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
 
 # 環境変数の設定（必要に応じて）
 export PATH=$PATH:/usr/local/go/bin
+
+
+
+
+# 基礎知識の整理（ポインタの操作）
+- 型の再定義を防ぐ（メモリ効率の向上）
+- 値の格納されたアドレスであることを明確にする: *int（データ共有）
+- ポインタを通じてアドレスに格納された値を取得・変更
+'''
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var x int = 10
+	var p *int = &x  // &xはxのアドレスを取得し、pに格納
+
+	fmt.Println("xの値:", x)  // xの値を表示
+	fmt.Println("xのアドレス:", &x)  // xのメモリアドレスを表示
+	fmt.Println("pが指すアドレスの値:", *p)  // pをデリファレンスして、pが指すアドレスの値を表示
+
+	*p = 20  // pをデリファレンスして、そのアドレスに新しい値(20)を格納
+	fmt.Println("xの新しい値:", x)  // xの値に変更される
+}
+'''

@@ -124,7 +124,11 @@ func (p *productRepository) FindById(productId uint) (*models.Product, error) {
 
 // Update implements IProductRepository.
 func (p *productRepository) Update(updateProduct models.Product) (*models.Product, error) {
-	panic("unimplemented")
+	result := p.db.Save(&updateProduct)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &updateProduct, nil
 }
 
 func NewProductRepository(db *gorm.DB) IProductRepository {

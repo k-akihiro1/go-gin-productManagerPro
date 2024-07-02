@@ -24,13 +24,21 @@ func main() {
 	productService := services.NewProductService(productRepository)
 	productController := controllers.NewProductController(productService)
 
+	authRrepository := repositories.NewAuthRepository(db)
+	authService := services.NewAuthSevice(authRrepository)
+	authController := controllers.NewAuthController(authService)
+
 	r := gin.Default()
 	// ルーターのグルーピング
 	productRouter := r.Group("/products")
+	authRouter := r.Group("/auth")
+
 	productRouter.GET("", productController.FindAll)
 	productRouter.GET("/:id", productController.FindById)
 	productRouter.POST("", productController.Create)
 	productRouter.PUT("/:id", productController.Update)
 	productRouter.DELETE("/:id", productController.Delete)
+
+	authRouter.POST("/signup", authController.Signup)
 	r.Run("localhost:8080")
 }

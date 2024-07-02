@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"go-gin-productManagerPro/models"
 	"go-gin-productManagerPro/repositories"
 	"os"
@@ -13,6 +14,7 @@ import (
 type IAuthService interface {
 	Signup(email string, password string) error
 	Login(email string, password string) (*string, error)
+	GetUserFromToken(tokenString string) (*models.User, error)
 }
 
 type AuthService struct {
@@ -63,4 +65,29 @@ func CreateToken(userId uint, email uint) (*string, error) {
 		return nil, err
 	}
 	return &tokenString, nil
+}
+
+func (s *AuthService) GetUserFromToken(tokenString string) (*models.User, error) {
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	var user *models.User
+	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		if float64(time.Now().Unix()) > claims["exp"].(float64) {
+			return nil, jwt.ErrTokenExpired
+		}
+
+		user, err = s.repository.FindUser(claims["email"].(string))
+		if err != nil {
+			return nil, err
+		}
+	}
+	return user, nil
 }

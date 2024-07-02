@@ -9,6 +9,7 @@ import (
 
 type IAuthService interface {
 	Signup(email string, password string) error
+	Login(email string, password string) (*string, error)
 }
 
 type AuthService struct {
@@ -27,8 +28,17 @@ func (s *AuthService) Signup(email string, password string) error {
 	}
 
 	user := models.User{
-		Email: email,
+		Email:    email,
 		Password: string(hashedPassword),
 	}
 	return s.repository.CreateUser(user)
+}
+
+func (s *AuthService) Login(email string, password string) (*string, error) {
+	foundUser, err := s.repository.FindUser(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return &foundUser.Email, nil
 }

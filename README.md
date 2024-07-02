@@ -194,7 +194,15 @@ sudo tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
 # 環境変数の設定（必要に応じて）
 export PATH=$PATH:/usr/local/go/bin
 
+# JWTパッケージの利用（https://github.com/golang-jwt/jwt?tab=readme-ov-file#installation-guidelines）
+go get -u github.com/golang-jwt/jwt/v5
 
+openssl rand -hex 32
+環境変数を以下のように設定
+SECRET_KEY=ddc8510d20e53cf98797f8d1a938851a4966dd39f5fcc3409ea851d431db0011
+
+デコードサイト
+https://jwt.io/
 
 
 # 基礎知識の整理（ポインタの操作）

@@ -7,6 +7,7 @@ import (
 	"go-gin-productManagerPro/repositories"
 	"go-gin-productManagerPro/services"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,6 +31,7 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 
 	r := gin.Default()
+	r.Use(cors.Default())
 	// ルーターのグルーピング
 	productRouter := r.Group("/products")
 	productRouterWithAuth := r.Group("/products", middlewares.AuthMiddlware(authService))

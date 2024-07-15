@@ -160,56 +160,90 @@ func main() {
 ```
 
 # 環境変数
+
 https://github.com/joho/godotenv
 go get github.com/joho/godotenv
 
 # データベースの接続設定
-- sqlite   :テスト環境用DB
-- postgres :本番環境用DB
-go get -u gorm.io/gorm
-go get -u gorm.io/driver/sqlite
-go get -u gorm.io/driver/postgres
 
+- sqlite :テスト環境用 DB
+- postgres :本番環境用 DB
+
+```
+go get -u gorm.io/gorm
+```
+
+```
+go get -u gorm.io/driver/sqlite
+```
+
+```
+go get -u gorm.io/driver/postgres
+```
+
+```
 host := "localhost"
 user := "user"
 password := "password"
 dbname := "mydatabase"
 port := "5432"
+```
 
 # フィールドに指定可能なタグ
+
 https://gorm.io/ja_JP/docs/models.html#%E3%83%95%E3%82%A3%E3%83%BC%E3%83%AB%E3%83%89%E3%81%AB%E6%8C%87%E5%AE%9A%E5%8F%AF%E8%83%BD%E3%81%AA%E3%82%BF%E3%82%B0
 
 ロールバック機能がない
 
+# Go の現在のバージョンを削除
 
-# Goの現在のバージョンを削除
 sudo rm -rf /usr/local/go
 
-# 新しいバージョンのGoをダウンロード
+# 新しいバージョンの Go をダウンロード
+
 wget https://golang.org/dl/go1.20.linux-amd64.tar.gz
 
 # アーカイブを解凍してインストール
+
 sudo tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
 
 # 環境変数の設定（必要に応じて）
+
 export PATH=$PATH:/usr/local/go/bin
 
-# JWTパッケージの利用（https://github.com/golang-jwt/jwt?tab=readme-ov-file#installation-guidelines）
-go get -u github.com/golang-jwt/jwt/v5
+# JWT パッケージの利用（https://github.com/golang-jwt/jwt?tab=readme-ov-file#installation-guidelines）
 
+```
+go get -u github.com/golang-jwt/jwt/v5
+```
+
+JWT のシークレットキーの作成（32 バイトのランダムな 16 進数の文字列を生成）
+
+```
 openssl rand -hex 32
+```
+
 環境変数を以下のように設定
 SECRET_KEY=ddc8510d20e53cf98797f8d1a938851a4966dd39f5fcc3409ea851d431db0011
 
 デコードサイト
 https://jwt.io/
 
+# CORS の導入（https://github.com/gin-contrib/cors）
+
+※ セキュリティー要件によって変更が必要
+
+```
+go get github.com/gin-contrib/cors
+```
 
 # 基礎知識の整理（ポインタの操作）
+
 - 型の再定義を防ぐ（メモリ効率の向上）
-- 値の格納されたアドレスであることを明確にする: *int（データ共有）
+- 値の格納されたアドレスであることを明確にする: \*int（データ共有）
 - ポインタを通じてアドレスに格納された値を取得・変更
-'''
+
+```
 package main
 
 import (
@@ -227,4 +261,4 @@ func main() {
 	*p = 20  // pをデリファレンスして、そのアドレスに新しい値(20)を格納
 	fmt.Println("xの新しい値:", x)  // xの値に変更される
 }
-'''
+```

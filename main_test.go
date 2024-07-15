@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"go-gin-productManagerPro/dto"
 	"go-gin-productManagerPro/infra"
 	"go-gin-productManagerPro/models"
+	"go-gin-productManagerPro/services"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -57,7 +60,7 @@ func setup() *gin.Engine {
 	return router
 }
 
-func TestFindAll(t *testing.T){
+func TestFindAll(t *testing.T) {
 	router := setup()
 
 	w := httptest.NewRecorder()
@@ -68,6 +71,54 @@ func TestFindAll(t *testing.T){
 	var res map[string][]models.Product
 	json.Unmarshal([]byte(w.Body.String()), &res)
 
-	assert.Equal(t, http.StatusOK,w.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Equal(t, 3, len(res["date"]))
+}
+
+func TestCreate(t *testing.T) {
+	router := setup()
+	token, err := services.CreateToken(1, "test1@example.com")
+	assert.Equal(t, nil, err)
+
+	createItemInput := dto.CreateProductInput{
+		Name:        "テストアイテム4",
+		Price:       4000,
+		Description: "Createテスト",
+	}
+
+	reqBody, _ := json.Marshal(createItemInput)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/products", bytes.NewBuffer(reqBody))
+	req.Header.Set("Authorization", "Bearer "+ *token)
+
+	router.ServeHTTP(w, req)
+
+	var res map[string]models.Product
+	json.Unmarshal([]byte(w.Body.String()), &res)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
+	assert.Equal(t, uint(4), res["data"].ID)
+}
+
+func TestCreateUnAuthorized(t *testing.T) {
+	router := setup()
+
+	createItemInput := dto.CreateProductInput{
+		Name:        "テストアイテム4",
+		Price:       4000,
+		Description: "Createテスト",
+	}
+
+	reqBody, _ := json.Marshal(createItemInput)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/products", bytes.NewBuffer(reqBody))
+
+	router.ServeHTTP(w, req)
+
+	var res map[string]models.Product
+	json.Unmarshal([]byte(w.Body.String()), &res)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
 }

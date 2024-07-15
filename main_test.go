@@ -1,13 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"go-gin-productManagerPro/infra"
 	"go-gin-productManagerPro/models"
 	"log"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/magiconair/properties/assert"
 
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
@@ -51,4 +55,19 @@ func setup() *gin.Engine {
 	router := setupRouter(db)
 
 	return router
+}
+
+func TestFindAll(t *testing.T){
+	router := setup()
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/products", nil)
+
+	router.ServeHTTP(w, req)
+
+	var res map[string][]models.Product
+	json.Unmarshal([]byte(w.Body.String()), &res)
+
+	assert.Equal(t, http.StatusOK,w.Code)
+	assert.Equal(t, 3, len(res["date"]))
 }

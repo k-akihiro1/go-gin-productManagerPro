@@ -1,9 +1,0 @@
-ENV=test
-
-# テスト環境ではSQLiteを使用するため、以下の設定は不要
-# DB_HOST=localhost
-# DB_USER=ginuser
-# DB_PASSWORD=ginpassword
-# DB_NAME=fleamarket
-# DB_PORT=5432
-# SECRET_KEY=ddc8510d20e53cf98797f8d1a938851a4966dd39f5fcc3409ea851d431db0011

@@ -8,10 +8,10 @@ import (
 
 type IProductService interface {
 	FindAll() (*[]models.Product, error)
-	FindById(productId uint) (*models.Product, error)
-	Create(createProductInput dto.CreateProductInput) (*models.Product, error)
-	Update(productId uint, updateproductInput dto.UpdateProductInput) (*models.Product, error)
-	Delete(productId uint) error
+	FindById(productId uint, userId uint) (*models.Product, error)
+	Create(createProductInput dto.CreateProductInput, userId uint) (*models.Product, error)
+	Update(productId uint, userId uint, updateproductInput dto.UpdateProductInput) (*models.Product, error)
+	Delete(productId uint, userId uint) error
 }
 
 type ProductService struct {
@@ -26,22 +26,24 @@ func (s *ProductService) FindAll() (*[]models.Product, error) {
 	return s.repository.FindAll()
 }
 
-func (s *ProductService) FindById(productId uint) (*models.Product, error) {
-	return s.repository.FindById(productId)
+func (s *ProductService) FindById(productId uint, userId uint) (*models.Product, error) {
+	return s.repository.FindById(productId, userId)
 }
 
-func (s *ProductService) Create(createProductInput dto.CreateProductInput) (*models.Product, error) {
+func (s *ProductService) Create(createProductInput dto.CreateProductInput, userId uint) (*models.Product, error) {
 	newProduct := models.Product{
 		Name:        createProductInput.Name,
 		Price:       createProductInput.Price,
 		Description: createProductInput.Description,
 		SoldOut:     false,
+		// 認証情報から取得できたuserId
+		UserID:      userId,
 	}
 	return s.repository.Create(newProduct)
 }
 
-func (s *ProductService) Update(productId uint, updateProductInput dto.UpdateProductInput) (*models.Product, error) {
-	targetProduct, err := s.FindById(productId)
+func (s *ProductService) Update(productId uint, userId uint, updateProductInput dto.UpdateProductInput) (*models.Product, error) {
+	targetProduct, err := s.FindById(productId, userId)
 	if err != nil {
 		return nil, err
 	}
@@ -61,6 +63,6 @@ func (s *ProductService) Update(productId uint, updateProductInput dto.UpdatePro
 	return s.repository.Update(*targetProduct)
 }
 
-func (s *ProductService) Delete(ProductId uint) error {
-	return s.repository.Delete(ProductId)
+func (s *ProductService) Delete(ProductId uint, userId uint) error {
+	return s.repository.Delete(ProductId, userId)
 }

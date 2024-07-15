@@ -3,6 +3,7 @@ package main
 import (
 	"go-gin-productManagerPro/controllers"
 	"go-gin-productManagerPro/infra"
+	"go-gin-productManagerPro/middlewares"
 	"go-gin-productManagerPro/repositories"
 	"go-gin-productManagerPro/services"
 
@@ -31,13 +32,14 @@ func main() {
 	r := gin.Default()
 	// ルーターのグルーピング
 	productRouter := r.Group("/products")
+	productRouterWithAuth := r.Group("/products", middlewares.AuthMiddlware(authService))
 	authRouter := r.Group("/auth")
 
 	productRouter.GET("", productController.FindAll)
-	productRouter.GET("/:id", productController.FindById)
-	productRouter.POST("", productController.Create)
-	productRouter.PUT("/:id", productController.Update)
-	productRouter.DELETE("/:id", productController.Delete)
+	productRouterWithAuth.GET("/:id", productController.FindById)
+	productRouterWithAuth.POST("", productController.Create)
+	productRouterWithAuth.PUT("/:id", productController.Update)
+	productRouterWithAuth.DELETE("/:id", productController.Delete)
 
 	authRouter.POST("/signup", authController.Signup)
 	authRouter.POST("/login", authController.Login)

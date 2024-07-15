@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-gin-productManagerPro/dto"
+	"go-gin-productManagerPro/models"
 	"go-gin-productManagerPro/services"
 	"net/http"
 	"strconv"
@@ -35,12 +36,19 @@ func (c *ProductController) FindAll(ctx *gin.Context) {
 }
 
 func (c *ProductController) FindById(ctx *gin.Context) {
+	user, exists := ctx.Get("user")
+	if !exists {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	userId := user.(*models.User).ID
+
 	productId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
-	product, err := c.service.FindById(uint(productId))
+	product, err := c.service.FindById(uint(productId), userId)
 	if err != nil {
 		if err.Error() == "products not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -53,6 +61,14 @@ func (c *ProductController) FindById(ctx *gin.Context) {
 }
 
 func (c *ProductController) Create(ctx *gin.Context) {
+	user, exists := ctx.Get("user")
+	if !exists {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	// *models.User 型に変換
+	userId := user.(*models.User).ID
+
 	var input dto.CreateProductInput
 
 	// respond with a 400 BadRequest status and provide a descriptive error message.
@@ -61,7 +77,7 @@ func (c *ProductController) Create(ctx *gin.Context) {
 		return
 	}
 
-	newProduct, err := c.service.Create(input)
+	newProduct, err := c.service.Create(input, userId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,6 +87,13 @@ func (c *ProductController) Create(ctx *gin.Context) {
 }
 
 func (c *ProductController) Update(ctx *gin.Context) {
+	user, exists := ctx.Get("user")
+	if !exists {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	userId := user.(*models.User).ID
+
 	productId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
@@ -88,7 +111,7 @@ func (c *ProductController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updateProduct, err := c.service.Update(uint(productId), input)
+	updateProduct, err := c.service.Update(uint(productId), userId, input)
 	if err != nil {
 		if err.Error() == "products not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -109,12 +132,19 @@ ctx.JSONメソッド： Ginフレームワークの一部
 */
 
 func (c *ProductController) Delete(ctx *gin.Context) {
+	user, exists := ctx.Get("user")
+	if !exists {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+	userId := user.(*models.User).ID
+
 	productId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
 		return
 	}
-	err = c.service.Delete(uint(productId))
+	err = c.service.Delete(uint(productId), userId)
 	if err != nil {
 		if err.Error() == "product not found" {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})

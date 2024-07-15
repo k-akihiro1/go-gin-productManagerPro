@@ -45,14 +45,14 @@ func (s *AuthService) Login(email string, password string) (*string, error) {
 		return nil, err
 	}
 
-	token, err := CreateToken(foundUser.ID, foundUser.ID)
+	token, err := CreateToken(foundUser.ID, foundUser.Email)
 	if err != nil {
 		return nil, err
 	}
 	return token, nil
 }
 
-func CreateToken(userId uint, email uint) (*string, error) {
+func CreateToken(userId uint, email string) (*string, error) {
 	// HS256でトークン情報をハッシュ化
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub":   userId,
@@ -80,6 +80,7 @@ func (s *AuthService) GetUserFromToken(tokenString string) (*models.User, error)
 
 	var user *models.User
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
+		// 有効期限の確認
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
 			return nil, jwt.ErrTokenExpired
 		}

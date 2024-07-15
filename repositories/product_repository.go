@@ -9,10 +9,10 @@ import (
 
 type IProductRepository interface {
 	FindAll() (*[]models.Product, error)
-	FindById(productId uint) (*models.Product, error)
+	FindById(productId uint, userId uint) (*models.Product, error)
 	Create(newProduct models.Product) (*models.Product, error)
 	Update(updateProduct models.Product) (*models.Product, error)
-	Delete(productId uint) error
+	Delete(productId uint, userId uint) error
 }
 
 type ProductMemoryRepository struct {
@@ -27,7 +27,7 @@ func (r *ProductMemoryRepository) FindAll() (*[]models.Product, error) {
 	return &r.products, nil
 }
 
-func (r *ProductMemoryRepository) FindById(productId uint) (*models.Product, error) {
+func (r *ProductMemoryRepository) FindById(productId uint, userId uint) (*models.Product, error) {
 	for _, v := range r.products {
 		if v.ID == productId {
 			return &v, nil
@@ -61,7 +61,7 @@ func (r *ProductMemoryRepository) Update(updateProduct models.Product) (*models.
 	return nil, errors.New("unexpected error")
 }
 
-func (r *ProductMemoryRepository) Delete(productId uint) error {
+func (r *ProductMemoryRepository) Delete(productId uint, userId uint) error {
 	for i, v := range r.products {
 		if v.ID == productId {
 			r.products = append(r.products[:i], r.products[i+1:]...)
@@ -95,8 +95,8 @@ func (r *productRepository) Create(newProduct models.Product) (*models.Product, 
 }
 
 // Delete implements IProductRepository.
-func (p *productRepository) Delete(productId uint) error {
-	deleteItem, err := p.FindById(productId);
+func (p *productRepository) Delete(productId uint, userId uint) error {
+	deleteItem, err := p.FindById(productId, userId);
 	if err != nil {
 		return err
 	}
@@ -120,9 +120,9 @@ func (p *productRepository) FindAll() (*[]models.Product, error) {
 }
 
 // FindById implements IProductRepository.
-func (p *productRepository) FindById(productId uint) (*models.Product, error) {
+func (p *productRepository) FindById(productId uint, userId uint) (*models.Product, error) {
 	var product models.Product
-	result := p.db.First(&product, productId)
+	result := p.db.First(&product, "id = ? AND user_id = ?", productId, userId)
 	if result.Error != nil {
 		if result.Error.Error() == "record not found" {
 			return nil, errors.New("product not found")

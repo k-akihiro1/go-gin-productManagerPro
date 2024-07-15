@@ -237,6 +237,16 @@ https://jwt.io/
 go get github.com/gin-contrib/cors
 ```
 
+# テスト環境の構築（https://github.com/stretchr/testify#installation）
+```
+go get github.com/stretchr/testify
+```
+### 参考
+* 【Golang】stretchr/testifyパッケージを使ってみる
+https://zenn.dev/aiiro/articles/cfc7c2e9a8e53a
+* Golangのtestify/assert 使えそうな関数まとめ
+https://qiita.com/JpnLavender/items/21b4574a7513472903ea
+
 # 基礎知識の整理（ポインタの操作）
 
 - 型の再定義を防ぐ（メモリ効率の向上）
